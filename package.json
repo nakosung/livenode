@@ -1,0 +1,12 @@
+{
+	"name" : "test",
+	"version" : "0.0.0",
+	"dependencies" : {
+		"express" : "3.0.0",
+		"sockjs" : "0.3.5",
+		"underscore" : "*",
+		"coffee-script" : "*",
+		"path" : "*",
+		"async" : "*"
+	}
+}

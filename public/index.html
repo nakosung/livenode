@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title>test</title>
+	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="lib/sockjs-0.3.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script type="text/javascript">
+	var sock = new SockJS('/echo');
+	$(function(){
+		function print(msg) {
+			$("#logs").append($("<div/>").text(msg));
+		}
+		function send(json) {
+			sock.send(JSON.stringify(json));
+		}
+		function loadScript(src) {
+			var domscript = document.createElement('script');
+			domscript.src = src;
+			document.getElementsByTagName('head')[0].appendChild(domscript);
+			domscript.onload = function() {
+				send({src:src});
+			}
+		}
+		print('hello');
+		sock.onopen = function() {
+	       console.log('open');
+		};
+		sock.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+		   	if (data["refresh"])
+		   		window.location.reload();
+		   	else if (data["log"]) 
+		   		print(data.log);
+		   	else if (data["src"]) {
+		   		loadScript(data.src)
+		   	}
+		};	
+		sock.onclose = function() {
+		   console.log('close');
+		   setTimeout(function(){
+		   		window.location.reload();
+		   },1000)
+		};
+	});
+
+	</script>
+</head>
+<body>
+	hello
+	<div id="logs"></div>
+</body>
+</html>
